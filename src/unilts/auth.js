@@ -5,20 +5,6 @@ const Address = "Address-Token"
 import Cookies from 'js-cookie'
 let millIseCode = new Date().getTime();
 let exprsTime = new Date(millIseCode + 30*24*60*60*1000)
-//登录信息存储
-// export function setAccess(token) {
-//   return localStorage.setItem(TokenKey, token)
-// }
-
-// //登录信息删除
-// export function deleteRemove() {
-//   return localStorage.removeItem(TokenKey)
-// }
-
-// //登录信息获取
-// export function getObtain() {
-//   return localStorage.getItem(TokenKey)
-// }
 
  //设置cookie
 export function setAccess(token) {
@@ -36,8 +22,6 @@ export function getObtain() {
 export function deleteRemove() { 
   return Cookies.remove(TokenKey)
 }
-
-
 
 //汇率存储
 export function setItems(token) {

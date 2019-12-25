@@ -12,7 +12,7 @@
     </p>
     <p style="line-height: 1.75em;">
       <img
-        src="http://manage.buyder.com/NoticeImg/20191125164636_9216.png"
+        src="@/img/zhuce.png"
         alt="20191125164636_9216.png"
       />
       <br />
@@ -52,7 +52,7 @@
     </p>
     <p style="line-height: 1.75em;">
       <img
-        src="http://manage.buyder.com/NoticeImg/20191125164704_5196.png"
+        src="@/img/buyder.png"
         alt="20191125164704_5196.png"
       />
     </p>
@@ -146,7 +146,7 @@
     <p style="line-height: 1.75em;">
       <span
         style="font-family: arial, helvetica, sans-serif;"
-      >BUYDER ủng hộ phương thức chuyển khoản ngân hàng và nạp tiền vào tài khoản</span>
+      >BUYDER ủng hộ phương thức nạp tiền vào tài khoản</span>
     </p>
     <p style="line-height: 1.75em;">
       <span style="font-family: arial, helvetica, sans-serif;">

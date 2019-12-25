@@ -5,7 +5,10 @@
       <Tabbar :tabs="tabs" />
     </div>
     <router-view></router-view>
+    <Calculator />
+    <Mailbox />
     <Online />
+    <CommonFoot />
     <Foot />
   </div>
 </template>
@@ -15,6 +18,9 @@ import Tabbar from "@/component/tabbar.vue";
 import Header from "@/component/headerTop.vue";
 import Foot from "@/component/foot.vue";
 import Online from "@/component/online.vue";
+import CommonFoot from "@/component/commonFoot.vue";
+import Calculator from "@/component/calculator.vue";
+import Mailbox from "@/component/mailbox.vue";
 export default {
   name: "index",
   data() {
@@ -39,7 +45,10 @@ export default {
     Tabbar,
     Header,
     Foot,
-    Online
+    Online,
+    CommonFoot,
+    Calculator,
+    Mailbox
   }
 };
 </script>

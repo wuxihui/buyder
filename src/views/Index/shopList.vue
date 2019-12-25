@@ -17,15 +17,6 @@
           align="center"
         >
         </el-table-column>
-        <!-- <el-table-column
-          v-if="
-            this.$route.query.SpecificationCode || this.carLists.Specification
-          "
-          prop="Specification"
-          :label="$t('shopList.specifications')"
-          width="200"
-          align="center"
-        > -->
         <el-table-column
           :label="$t('shopList.specifications')"
           width="250"
@@ -34,22 +25,21 @@
           <template slot-scope="scope">
             <span>
               {{
-                scope.row.Specification || this.$route.query.SpecificationCode
+                scope.row.Specification || SpecificationCode
               }}
             </span>
           </template>
         </el-table-column>
-        <!-- </el-table-column> -->
         <el-table-column
           prop="QTY"
           :label="$t('shopList.The-number-of')"
           align="center"
-          width="80"
+          width="100"
         ></el-table-column>
         <el-table-column
           prop="GoodsPrice"
           :label="$t('shopList.The-unit-price') + '(' + symbol + ')'"
-          width="140"
+          width="160"
           align="center"
         ></el-table-column>
         <!---中国运费--->
@@ -59,19 +49,12 @@
           align="center"
           width="220"
         ></el-table-column>
-        <!-- <el-table-column
-          prop="BuyFee"
-          :label="$t('shopList.Code-and-fees') + '(' + symbol + ')'"
-          align="center"
-          width="120"
-        ></el-table-column> -->
         <!---增值服务费--->
         <el-table-column
           :label="$t('shopList.server')"
           align="left"
           header-align="center"
         >
-          <!-- align="center" -->
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -462,6 +445,7 @@ export default {
   name: "shopList",
   data() {
     return {
+      SpecificationCode: this.$route.query.SpecificationCode,
       resNewListImg: [
         {
           id: 2,
@@ -476,7 +460,6 @@ export default {
           own: this.$t("serve.own")
         }
       ], //图片触发展示
-      //ways: true, //控制取件方式
       radioWays: "1", //默认选择仓库
       isOther: true,
       areaes: [],
@@ -548,7 +531,11 @@ export default {
     ])
   },
   methods: {
-    ...mapActions("shopList", ["getAddressList", "getGoodsList", "getLijiBuy"]),
+    ...mapActions("shopList", [
+      "getAddressList",
+      "getGoodsList",
+      "getLijiBuy"
+    ]),
     //选择渠道
     handleTradition(id, index) {
       this.isSelect = index;
@@ -651,17 +638,17 @@ export default {
           ObjGoods["SpecificationCode"] = item.SpecificationCode;
           //单价RMB
           ObjGoods["GoodsPriceRMB"] = item.GoodsPriceRMB;
-          
+
           //ChinaFreightRMB;
           //单价
           ObjGoods["GoodsPrice"] = item.GoodsPrice;
-          
+
           if (forIndex > 0) {
             if (item.GoodsURL == this.carLists[forIndex - 1].GoodsURL) {
               item.rowAddServicesCode = [];
               item.rowAddServicePrice = 0;
               item.ChinaFreight = 0;
-              item.ChinaFreightRMB= 0;
+              item.ChinaFreightRMB = 0;
             }
           }
           //中国运费RMB
@@ -966,6 +953,10 @@ export default {
     },
 
     cellMerge({ row, column, rowIndex, columnIndex }) {
+      if (this.spanArr.length == 0) {
+        return;
+      }
+
       if (columnIndex === 0 || columnIndex === 4 || columnIndex === 5) {
         const _row = this.spanArr[rowIndex];
         const _col = _row > 0 ? 1 : 0;
@@ -1077,7 +1068,7 @@ export default {
           codeTotal: this.$route.query.codeTotal,
           ChinaFreightTotal: this.$route.query.ChinaFreightTotal,
           QTY: this.$route.query.QTY
-        }
+        };
         let goodList = [];
         goodList.push(objectBuy);
         this.getLijiBuy(goodList);

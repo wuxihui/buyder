@@ -324,7 +324,6 @@ export default {
       citysVal: "",
       areasVal: "",
       provincesVal: "",
-      // row: "",
       indexNumber: "",
       editorRecipientName: "",
       editorDefault: "1",

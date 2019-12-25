@@ -1,6 +1,10 @@
 import http from '@/unilts/http'
-import { CountryCode } from "@/entry/index";
-import { format } from '@/algo/index'
+import {
+  CountryCode
+} from "@/entry/index";
+import {
+  format
+} from '@/algo/index'
 import {
   accAdd,
   accMul
@@ -9,7 +13,7 @@ export default {
   namespaced: true,
   state: {
     IsDelay: false,
-    spanArr: [],//合并行集合
+    spanArr: [], //合并行集合
     addressList: [], //获取收货地址，
     carLists: [], //代购车列表
     goodsTotal: 0, //商品总金额
@@ -38,7 +42,7 @@ export default {
     }, //中国运费总金额
     SETISDELAY(state, IsDelay) {
       state.IsDelay = IsDelay
-    },
+    }, //延迟加载
     SETSPANARR(state, spanArr) {
       state.spanArr = spanArr
     },
@@ -69,7 +73,6 @@ export default {
     getLijiBuy({
       commit
     }, resNew) {
-      console.log(resNew);
       let resShops = 0; //商品总价
       let resData = 0; //商品总价
       let resGoods = 0; //商品总价
@@ -97,14 +100,15 @@ export default {
         resMoneyTotal = accAdd(resCodes, resData).toFixed(2)
         TotalAmount = accAdd(resChinaYun, resMoneyTotal).toFixed(2)
       }
-
-
+      
       http.get("/api/BuyChina/GetBuyFee?", {
         params: {
           CountryCode: CountryCode
         }
       }).then(res => {
         if (res.Status == 200) {
+          // console.log(22);
+          // console.log(resNew);
           let result = res.Data;
           let arrResult = result.split(',');
           resCodes = arrResult[1];
@@ -114,9 +118,16 @@ export default {
           commit("SETCODELISTS", resCodes) //代买手续费总金额
           commit("SETMONEYTOTALS", TotalAmount) //合计
           commit("SETCHINAYUNFEI", resChinaYun) //中国运费总金额
+          commit("SETISDELAY", true) //延迟加载
+          // commit("SETSPANARR", newSpanArr)
         }
       })
     },
+
+    // //1688
+    // getLijiBuySix({commit}, resNew) {
+    //    console.log(resNew);
+    // },
 
     //代购车列表
     getGoodsList({
@@ -160,7 +171,7 @@ export default {
           }
         }
 
-        commit("SETISDELAY", true)
+        commit("SETISDELAY", true) //延迟加载
         commit("SETSPANARR", newSpanArr)
 
         let resShops = 0; //商品总价
@@ -182,15 +193,15 @@ export default {
           //商品总金额
           resGoods = accMul(resNew[i].QTY, resNew[i].GoodsPrice)
           resShops = accAdd(resShops, accMul(resNew[i].QTY, resNew[i].GoodsPrice)).toFixed(2)
-  
+
           if (i > 0) {
-            if (resNew[i].GoodsURL != resNew[i-1].GoodsURL) {
+            if (resNew[i].GoodsURL != resNew[i - 1].GoodsURL) {
               resChinaYun = accAdd(resNew[i].ChinaFreight, resChinaYun).toFixed(2);
             }
-          }else{
+          } else {
             resChinaYun = accAdd(resNew[i].ChinaFreight, resChinaYun).toFixed(2);
           }
-          
+
         }
         CalculationAmount = accAdd(resChinaYun, resShops).toFixed(2);
         CalculationAmount = accAdd(CalculationAmount, resCodes).toFixed(2)

@@ -1,17 +1,32 @@
 <template>
   <div class="serve-total">
     <div class="serve-code">
-      <p>{{ $t("main.code") }}</p>
-      <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="type" :label="$t('serve.service')" width="400" align="center"></el-table-column>
-        <el-table-column prop="cost" :label="$t('serve.cost')" width="400" align="center"></el-table-column>
-        <el-table-column prop="instructions" :label="$t('serve.instructions')" align="center"></el-table-column>
-      </el-table>
+        <p>{{ $t("main.code") }}</p>
+        <el-table :data="tableData" border style="width: 100%">
+          <el-table-column
+            prop="type"
+            :label="$t('serve.service')"
+            width="400"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="cost"
+            :label="$t('serve.cost')"
+            width="400"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="instructions"
+            :label="$t('serve.instructions')"
+            align="center"
+          ></el-table-column>
+        </el-table>
+        <div class="serve-china">
+          <span>{{ $t("details.China freight") }}:</span>
+          <span>{{ $t("serve.Buyder does not charge Chinese") }}</span>
+        </div>
     </div>
-    <div class="serve-china">
-      <span>{{ $t("details.China freight") }}:</span>
-      <span>{{ $t("serve.Buyder does not charge Chinese") }}</span>
-    </div>
+
     <div class="serve-freight">
       <p>
         <span>{{ $t("details.The international freight") }}</span>
@@ -22,12 +37,16 @@
         border
         style="width: 100%; margin-top: 20px"
       >
-        <el-table-column fixed="left" :label="$t('serve.channel_line')" width="280" align="center">
+        <el-table-column
+          fixed="left"
+          :label="$t('serve.channel_line')"
+          width="280"
+          align="center"
+        >
           <template slot-scope="scope">
             <div class="serve-dropdown">
               <span>
-                {{ scope.row.type
-                }}
+                {{ scope.row.type }}
                 <el-popover placement="top" width="300" trigger="hover">
                   <p>{{ scope.row.aging }}</p>
                   <p>{{ scope.row.sun }}</p>
@@ -39,8 +58,18 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="name" :label="$t('serve.warehouse')" align="center" width="140"></el-table-column>
-        <el-table-column prop="cost" :label="$t('serve.cost')" align="center" width="140"></el-table-column>
+        <el-table-column
+          prop="name"
+          :label="$t('serve.warehouse')"
+          align="center"
+          width="140"
+        ></el-table-column>
+        <el-table-column
+          prop="cost"
+          :label="$t('serve.cost')"
+          align="center"
+          width="140"
+        ></el-table-column>
         <el-table-column
           prop="instructions"
           :label="$t('serve.instructions')"
@@ -52,9 +81,49 @@
 
     <div class="server-home">
       <p>{{ $t("serve.Home delivery freight") }}</p>
-      <el-table :data="tableHomeServe" border :span-method="objectSpanMethod" style="width: 100%">
-        <el-table-column prop="name" :label="$t('serve.channel_line')" width="400" align="center"></el-table-column>
-        <el-table-column prop="cost" :label="$t('serve.cost')" width="400" align="center"></el-table-column>
+      <el-table
+        :data="tableHomeServe"
+        border
+        :span-method="objectSpanMethod"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="name"
+          :label="$t('serve.channel_line')"
+          width="400"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          :label="$t('serve.cost')"
+          width="400"
+          align="left"
+          header-align="center"
+        >
+          <template slot-scope="scope">
+            <span>
+              {{ scope.row.address }}
+            </span>
+
+            <span>
+              {{ scope.row.less }}
+            </span>
+            <span>
+              {{ scope.row.greater }}
+            </span>
+
+            <span>
+              {{ scope.row.nonAddress }}
+            </span>
+
+            <span>
+              {{ scope.row.lessOne }}
+            </span>
+
+            <span>
+              {{ scope.row.greaterOne }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="instructions"
           :label="$t('serve.instructions')"
@@ -66,8 +135,18 @@
     <div class="serve-addvalue">
       <p>{{ $t("serve.Value-added services") }}</p>
       <el-table :data="tableValueList" border style="width: 100%">
-        <el-table-column prop="type" :label="$t('outside.type')" width="400" align="center"></el-table-column>
-        <el-table-column prop="cost" :label="$t('serve.cost')" width="400" align="center"></el-table-column>
+        <el-table-column
+          prop="type"
+          :label="$t('outside.type')"
+          width="400"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="cost"
+          :label="$t('serve.cost')"
+          width="400"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="instructions"
           :label="$t('serve.instructions')"
@@ -140,13 +219,23 @@ export default {
       tableHomeServe: [
         {
           name: this.$t("details.Tariff subsidy channel"),
-          cost: "19000" + symbol + "/0.5kg",
-          instructions: this.$t("serve.isCalculatedAs")
+          address: this.$t("serve.address"),
+          less: "≤3kg：20000₫",
+          greater: ">3kg:" + this.$t("serve.greater") + ":10000₫/kg",
+          nonAddress: this.$t("serve.nonAddress"),
+          lessOne: "≤1kg：33000₫",
+          greaterOne: ">1kg:" + this.$t("serve.greaterOne") + ":16000₫/kg",
+          instructions: this.$t("serve.calculated")
         },
         {
           name: this.$t("details.Traditional channels"),
-          cost: "19000" + symbol + "/0.5kg",
-          instructions: this.$t("serve.isCalculatedAs")
+          address: this.$t("serve.address"),
+          less: "≤3kg：20000₫",
+          greater: ">3kg:" + this.$t("serve.greater") + ":10000₫/kg",
+          nonAddress: this.$t("serve.nonAddress"),
+          lessOne: "≤1kg：33000₫",
+          greaterOne: ">1kg:" + this.$t("serve.greaterOne") + ":16000₫/kg",
+          instructions: this.$t("serve.calculated")
         }
       ],
       tableValueList: [
@@ -169,6 +258,7 @@ export default {
     };
   },
   methods: {
+  
     //tableHomeServe
     getSpanArr(data) {
       for (var i = 0; i < data.length; i++) {
@@ -241,13 +331,30 @@ export default {
     color: @home-logo;
   }
   .serve-code {
-    p {
-      font-family: Arial;
-    }
-    /deep/.el-table_1_column_1,
-    .is-center {
-      font-weight: 900;
-    }
+    // display: flex;
+    // .serve-code-content {
+      // width: 800px;
+      .serve-china {
+        margin: 10px 0;
+        span {
+          color: gray;
+          font-size: 14px;
+          line-height: 30px;
+        }
+        span:nth-child(1) {
+          margin-right: 10px;
+        }
+      }
+      p {
+        font-family: Arial;
+      }
+      /deep/.el-table_1_column_1,
+      .is-center {
+        font-weight: 900;
+      }
+    //}
+
+    
   }
   .serve-freight {
     p {
@@ -295,16 +402,16 @@ export default {
     margin-bottom: 30px;
   }
   //中国运费
-  .serve-china {
-    margin: 10px 0;
-    span {
-      color: gray;
-      font-size: 14px;
-    }
-    span:nth-child(1) {
-      margin-right: 10px;
-    }
-  }
+  // .serve-china {
+  //   margin: 10px 0;
+  //   span {
+  //     color: gray;
+  //     font-size: 14px;
+  //   }
+  //   span:nth-child(1) {
+  //     margin-right: 10px;
+  //   }
+  // }
   .serve-freight {
     overflow: hidden;
 
@@ -314,6 +421,12 @@ export default {
   }
 
   .server-home {
+    /deep/.el-table_3_column_9 {
+      /deep/.cell {
+        padding-left: 50px;
+        line-height: 15px;
+      }
+    }
     p {
       margin-top: 20px;
     }

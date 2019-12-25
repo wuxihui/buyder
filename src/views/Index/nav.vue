@@ -4,7 +4,7 @@
       <div class="nav-course-list">
         <div class="nav-course-link">
           <p v-show="isLink"></p>
-          <h1 @click="handleCourse(1)">{{$t("nav.Buyer_tutorial")}}</h1>
+          <h1 @click="handleCourse(1)">{{ $t("nav.Buyer_tutorial") }}</h1>
         </div>
         <ul>
           <li
@@ -37,10 +37,10 @@
           </div>
         </div>
       </div>
-      
-      <Trans v-if="isIndex === 1" />
-      <Shopping v-if="isIndex === 2" />
-      <Embargo v-if="isIndex === 3" />
+
+      <Trans v-if="isIndex == 1" />
+      <Shopping v-if="isIndex == 2" />
+      <Embargo v-if="isIndex == 3" />
       <Procurement v-if="iscCourseIndex == 1" />
       <Contraband v-if="iscCourseIndex == 2" />
     </div>
@@ -53,15 +53,12 @@ import Shopping from "@/component/shopping.vue";
 import Embargo from "@/component/embargo.vue";
 import Contraband from "@/component/contraband.vue";
 import Procurement from "@/component/procurement.vue";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "Nav",
   data() {
     return {
-      isLink: true, //控制左边的边框
-      isColor: 1,
-      isColorProblem: 0,
-      isIndex: 0,
-      iscCourseIndex: 1,
+      // isLink: true, //控制左边的边框
       buyNavs: [
         { id: 1, name: this.$t("nav.Shopping") },
         { id: 2, name: this.$t("nav.cargo") }
@@ -73,16 +70,27 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapState("car", [
+      "isIndex",
+      "iscCourseIndex",
+      "isColor",
+      "isColorProblem",
+      "isLink"
+    ])
+  },
   methods: {
     //buyder教程小标题
     handleColor(id) {
-      this.isColor = id;
-      this.isLink = true;
-      this.isColorProblem = 0;
-      this.isIndex = 0;
-      //this.isIndex = id;
-      //console.log(666, id);
-      this.iscCourseIndex = id;
+      this.$store.commit("car/SETISCOLOR", id);
+
+      this.$store.commit("car/SETISLINK", true);
+      
+      this.$store.commit("car/SETISCOLORPROBLEM", 0);
+
+      this.$store.commit("car/SETISINDEX", 0);
+
+      this.$store.commit("car/SETISCCOURSEINDEX", id);
     },
     //buyder教程大标题
     handleCourse(zero) {
@@ -90,12 +98,15 @@ export default {
     },
     //常见问题小标题
     handleColorProblem(id) {
-      this.isColorProblem = id;
-      this.isColor = 0;
-      // console.log(888, id);
-      this.isLink = false;
-      this.isIndex = id;
-      this.iscCourseIndex = 0;
+      this.$store.commit("car/SETISCOLORPROBLEM", id);
+
+      this.$store.commit("car/SETISCOLOR", 0);
+
+      this.$store.commit("car/SETISLINK", false);
+
+      this.$store.commit("car/SETISINDEX", id);
+
+      this.$store.commit("car/SETISCCOURSEINDEX", 0);
     },
     //常见问题小标题
     handleProblem(one) {

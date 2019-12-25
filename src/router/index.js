@@ -85,6 +85,16 @@ const router = new Router({
         component: () => import('../views/Index/standby.vue')
       },
       {
+        path: "privacy",
+        name: "privacy",
+        component: () => import("../views/Index/privacy.vue")
+      },
+      {
+        path: "aboutBuyer",
+        name: "aboutBuyer",
+        component: () => import("../views/Index/aboutBuyer.vue")
+      },
+      {
         path: "notFound",
         name: "notFound",
         component: () => import('../views/Index/notFound.vue')

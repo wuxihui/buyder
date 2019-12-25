@@ -370,6 +370,9 @@ export default {
       this.IsDelay = true;
     },
     cellMerge({ row, column, rowIndex, columnIndex }) {
+      if(this.spanArr.length == 0) {
+        return;
+      }
       if (columnIndex === 1 || columnIndex === 4 ) {
         const _row = this.spanArr[rowIndex];
          const _col = _row > 0 ? 1 : 0;

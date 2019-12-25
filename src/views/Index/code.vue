@@ -12,14 +12,13 @@
 
 <style scoped lang="less">
   .code-total {
-    //width: 100%;
     position: relative;
-    //padding-bottom: 60px;
+    padding-bottom: 2000px;
+    
     img {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      //min-width: 1366px;
       width: 100%;
       margin-bottom: 80px;
     }

@@ -1,8 +1,8 @@
 <template>
   <div class="home-head">
-    <!-- 此处为logo -->
+    <!-- logo  -->
     <div class="home-logo" @click="handleJump" :title="$t('main.Home')">
-      <img src="@/img/logo.jpg" alt />
+      <img src="@/img/logo.png" alt />
     </div>
     <div class="home-search">
       <el-input
@@ -185,7 +185,7 @@
         <el-dialog
           title
           :visible.sync="dialogVisibleRegist"
-          width="550px"
+          width="550px" 
           :before-close="handleCloseRegin"
         >
           <p v-if="isReturn" @click="handleIsRereturn">
@@ -202,7 +202,27 @@
               :placeholder="$t('headerTop.register-email')"
               v-model="emailVal"
             />
+            
           </div>
+            
+          <div class="home-enter-code">
+            <i class="el-icon-message"></i>
+            <input
+              type="text"
+              :placeholder="$t('headerTop.please_enter_verification_code')"
+              v-model="VCode"
+            />
+          </div>
+          <span class="get-vcode" >
+            <el-button
+              type="primary"
+              @click="SendEmailVCode"
+            >
+              {{$t('headerTop.get_verification_code')}}
+            </el-button>
+          </span>
+
+          <div style="clear:both"></div>
 
           <!--注册密码 -->
           <div class="home-resign-password">
@@ -250,7 +270,7 @@
 
 <script>
 import { setAccess, deleteRemove, getObtain } from "@/unilts/auth";
-import { CountryCode } from "@/entry/index";
+import { CountryCode, buYer } from "@/entry/index";
 import { deepCopy } from "@/algo/index";
 import { mapState, mapActions } from "vuex";
 import "@/md5/jQuery.md5";
@@ -278,17 +298,14 @@ export default {
       //   { id: 2, url: require("@/img/Vietnam.png"), name: this.$t('headerTop.Vietnam') }
       // ],
       imgUrlOne: require("@/img/Vietnam.png"),
-      // inputVal:
-      //   "https://detail.tmall.com/item.htm?spm=a230r.1.14.20.48d51848ZTdQhn&id=529618559970&ns=1&abbucket=",
-      inputVal:
-        "https://detail.1688.com/offer/545200502627.html?spm=a2609.11441441.j5uezclz.1.774a490d3LbXYp&tracelog=p4p&clickid=1cbaa51f5017405b90bd039629b68bfd&sessionid=2dc87e45e5650f80a85e70c5196b0330",
+      inputVal: "",
       fullscreenLogin: false,
       emails: emails,
-      //isOk: false,
       accountVal: "",
       passwordVal: "",
       passwordResitVal: "",
       emailVal: "",
+      VCode:"",
       passwordComfirm: "",
       inputCheckVal: false,
       dialogVisibleRegist: false
@@ -359,6 +376,7 @@ export default {
       this.passwordResitVal = "";
       this.passwordComfirm = "";
       this.emailVal = "";
+      this.VCode = "";
     },
     //注冊返回
     handleIsRereturn() {
@@ -401,31 +419,26 @@ export default {
           message: this.$t("headerTop.Minimum-six-digits"),
           type: "warning"
         });
-        // this.$layer.msg("最少六位数");
       } else if (this.inputNewPassword !== this.inputRepeatVal) {
         this.$message({
           message: this.$t("headerTop.passwords-not-match"),
           type: "warning"
         });
-        // this.$layer.msg("两次密码输入不一致");
       } else if (this.inputNewPassword === "") {
         this.$message({
           message: this.$t("headerTop.password-cannot-empty"),
           type: "warning"
         });
-        // this.$layer.msg("新密码不能为空");
       } else if (this.inputRepeatVal === "") {
         this.$message({
           message: this.$t("headerTop.enter-the-password-again"),
           type: "warning"
         });
-        // this.$layer.msg("请在输一次密码");
       } else if (this.inputOriginalVal === "") {
         this.$message({
           message: this.$t("headerTop.enter-the-original-password"),
           type: "warning"
         });
-        // this.$layer.msg("请输入原始密码");
       } else {
         //修改密码,post
         this.$api.changePassword(params).then(res => {
@@ -437,7 +450,6 @@ export default {
               message: this.$t("headerTop.Modify-successfully"),
               type: "success"
             });
-            // this.$layer.msg("修改成功,请重新登录");
             deleteRemove();
             this.$router.replace("home");
             this.dialogVisible = false;
@@ -458,14 +470,12 @@ export default {
           message: this.$t("headerTop.Please-link"),
           type: "warning"
         });
-        // this.$layer.msg("请输入链接");
       } else {
         if (!reg.test(this.inputVal)) {
           this.$message({
             message: this.$t("headerTop.Please-enter-the-link"),
             type: "warning"
           });
-          //this.$layer.msg("请输入正确的链接");
         } else if (
           this.inputVal.indexOf("taobao.com") > -1 ||
           this.inputVal.indexOf("tmall.com") > -1
@@ -478,7 +488,6 @@ export default {
             this.$router.push("/details");
           });
         } else if (this.inputVal.indexOf("1688.com") > -1) {
-          // let timer = Math.round(new Date().getTime() / 1000);
           let params = {
             URL: this.inputVal,
             rate: this.rate
@@ -495,14 +504,6 @@ export default {
         }
       }
     },
-    //移出事件
-    // leave() {
-    //   this.isOk = false;
-    // },
-    // //移入事件
-    // enter() {
-    //   this.isOk = true;
-    // },
     //个人中心
     handlePersonal() {
       let UserCode = JSON.parse(getObtain()).resNew;
@@ -538,8 +539,6 @@ export default {
         this.$router.push("car");
       }
     },
-    //2264850089@qq.com
-    //123456
     //modle登录
     handleLogin() {
       let params = {
@@ -552,23 +551,14 @@ export default {
           message: this.$t("headerTop.Please enter account number"),
           type: "warning"
         });
-        //this.$message.warning("请输入账号");
       } else if (this.passwordVal === "") {
         this.$message({
           message: this.$t("headerTop.Please enter password"),
           type: "warning"
         });
-        //this.$message.warning("请输入密码");
       } else {
         if (this.emails === "") {
           this.$api.login(params).then(res => {
-            // if (res.Data === null) {
-            //   this.$message({
-            //     message: this.$t("headerTop.Wrong account or password"),
-            //     type: "warning"
-            //   });
-            //   // that.$message.warning("账号或密码错误");
-            // }
             if (res) {
               let resNew = res.Data.UserCode;
               let resData = res.Data.Email;
@@ -582,11 +572,12 @@ export default {
               };
               let resJson = JSON.stringify(resNow);
               setAccess(resJson);
+              this.$router.push("/personalCenter");
               this.$message({
                 message: this.$t("headerTop.Login successful"),
                 type: "success"
               });
-              //this.$router.replace("home");
+
               this.emails = res.Data.Email;
               this.accountVal = "";
               this.passwordVal = "";
@@ -597,7 +588,6 @@ export default {
         }
       }
     },
-
     //modle注册按钮
     handleResit() {
       let reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
@@ -605,27 +595,27 @@ export default {
       let params = {
         CountryCode: CountryCode,
         Email: this.emailVal,
+        VCode: this.VCode,
         Password: $.md5(this.passwordResitVal),
         SPassword: $.md5(this.passwordComfirm)
       };
+      console.log(JSON.stringify(params));
+      
       if (this.emailVal === "") {
         this.$message({
           message: this.$t("headerTop.Please enter email"),
           type: "warning"
         });
-        // this.$message.warning("请输入email");
       } else if (this.passwordResitVal === "") {
         this.$message({
           message: this.$t("headerTop.Please enter password"),
           type: "warning"
         });
-        //this.$message.warning("请输入密码");
       } else if (this.inputCheckVal === false) {
         this.$message({
           message: this.$t("headerTop.Consent to service agreement"),
           type: "warning"
         });
-        //this.$message.warning("同意服务协议");
       } else if (this.passwordComfirm === "") {
         this.$message({
           message: this.$t(
@@ -633,52 +623,36 @@ export default {
           ),
           type: "warning"
         });
-        //this.$message.warning("请填写确认密码");
       } else if (this.passwordResitVal !== this.passwordComfirm) {
         this.$message({
           message: this.$t("headerTop.The two passwords do not match"),
           type: "warning"
         });
-        //this.$message.warning("两次密码不一致");
       } else if (!reg.test(this.emailVal)) {
         this.$message({
           message: this.$t("headerTop.The email format is incorrect"),
           type: "warning"
         });
-        //this.$message.warning("邮箱格式不正确");
       } else if (!regPassWord.test(this.passwordResitVal)) {
         this.$message({
           message: this.$t("headerTop.Password cannot be less than 6 digits"),
           type: "warning"
         });
-        //this.$message.warning("密码不能少于6位");
       } else {
-        //let that = this;
         this.$api.resGeRd(params).then(res => {
           if (res.Data) {
-            // that.$message({
-            //   message: "注册成功",
-            //   type: "success"
-            // });
-            //this.push("home");
+            this.inputCheckVal = false;
+            this.passwordResitVal = "";
+            this.passwordComfirm = "";
+            this.emailVal = "";
+            this.VCode = "";
+            this.dialogVisibleRegist = false;
 
-            this.$alert(this.$t("headerTop.Registered-successfully"), "", {
-              confirmButtonText: this.$t("headerTop.Determine"),
-              callback: action => {
-                this.inputCheckVal = false;
-                this.passwordResitVal = "";
-                this.passwordComfirm = "";
-                this.emailVal = "";
-                this.dialogVisibleRegist = false;
-                this.$store.commit("header/SETISTANKUANG", true);
-              }
-            });
-          } else {
             this.$message({
               message: res.Msg,
-              type: "warning"
+              type: "success"
             });
-          }
+          } 
         });
       }
     },
@@ -707,6 +681,44 @@ export default {
       this.passwordComfirm = "";
       this.emailVal = "";
       this.$store.commit("header/SETISTANKUANG", false);
+    },
+    SendEmailVCode(){
+      let reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
+      if (this.emailVal === "") {
+        this.$message({
+          message: this.$t("headerTop.Please enter email"),
+          type: "warning"
+        });
+        return;
+      }
+      if (!reg.test(this.emailVal)) {
+        this.$message({
+          message: this.$t("headerTop.The email format is incorrect"),
+          type: "warning"
+        });
+        return;
+      }
+      let params = {
+        
+        Email: this.emailVal,
+        CountryCode: CountryCode
+      }
+      this.$api.SendEmailVCode(params).then(res =>{
+        
+        if (res.Data) {
+          this.$message({
+            message: this.$t(res.Msg),
+            type: "success"
+          });
+        }else{
+          this.$message({
+            message: this.$t(res.Msg),
+            type: "warning"
+          });       
+        }
+        
+      });
+      
     }
   },
   created() {
@@ -773,7 +785,7 @@ export default {
     cursor: pointer;
     width: 164px;
     height: 90px;
-    background: @home-logo;
+    //background: @home-logo;
     margin-top: 16px;
 
     img {
@@ -844,6 +856,7 @@ export default {
       color: @home-p;
       margin-left: 9px;
       margin-top: 59px;
+      font-weight: 900;
     }
   }
 
@@ -870,6 +883,7 @@ export default {
         position: relative;
         top: -13px;
         margin-right: 10px;
+        font-weight: 900;
       }
 
       /deep/.el-button:hover {
@@ -885,6 +899,9 @@ export default {
         height: 10px;
         font-size: 10px;
       }
+    }
+    /deep/.el-button {
+      font-weight: 900;
     }
 
     //国旗，dropdowm下拉框
@@ -1133,6 +1150,9 @@ export default {
         background: @home-logo;
         border: 1px solid @home-logo;
       }
+      /deep/.el-dialog {
+        height: auto;
+      }
 
       //注册邮箱
       .home-resign-account {
@@ -1162,6 +1182,55 @@ export default {
           top: 2px;
           margin-left: 10px;
         }
+      }
+
+      .get-vcode{
+        float: left;
+        padding: 0px;
+        margin: 5% 0 0 1%;
+        width: 126px;
+        height: 45px;
+        line-height: 45px;
+        cursor:pointer;
+   
+        .el-button{
+          width: 100%;
+          right: 0;
+          padding-left: 2px;
+          text-align: center;
+     
+        }
+      }
+      .home-enter-code{
+        float: left;
+        margin: 5% 0 0 19%;
+        width: 210px;
+        height: 45px;
+        border: 1px solid @order-li;
+        padding: 0px;
+        border-radius: 4px;
+
+        .el-icon-message {
+          font-size: 25px;
+          position: relative;
+          top: 5px;
+          left: 8px;
+        }
+        input {
+          width: 160px;
+          height: 40px;
+
+          border: none;
+          border-radius: 4px;
+          padding-left: 8px;
+          outline: none;
+
+          position: relative;
+          top: 2px;
+          margin-left: 10px;
+         
+        }
+        
       }
 
       //注册密码

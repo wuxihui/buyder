@@ -18,10 +18,16 @@ export const birDate = /^(\d{4})-(\d{2})-(\d{2})$/
 
 export const account = "19034997525011"
 
-export const bank = "Techombank"
+export const bank = "Techcombank"
 
 export const accountName = "YIN CHUANDONG"
 
 export const centimeter = "cm"
+
+export const mainPhone = "024 36414833"
+
+export const email = "contact@buyder.com"
+
+export const buYer = "buyder"
 
 

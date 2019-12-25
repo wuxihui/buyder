@@ -47,11 +47,14 @@ export default {
   display: flex;
   .home-rate {
     margin-top: 17px;
-    min-width: 130px;
+    min-width: 150px;
 
     .home-money {
       height: 14px;
       width: 14px;
+    }
+    span {
+      font-weight: 900;
     }
   }
   .tabbar-list {
@@ -61,7 +64,7 @@ export default {
       margin-top: 5px;
       .z-act {
         color: @home-logo;
-        border-bottom: 2px solid @home-logo;
+        border-bottom: 4px solid @home-logo;
       }
       li {
         cursor: pointer;
@@ -69,7 +72,8 @@ export default {
         font-size: 16px;
         margin-right: 40px;
         min-height: 38px;
-        line-height: 38px;
+        line-height: 36px;
+        font-weight: 900;
       }
       li:hover {
         color: @home-logo;

@@ -17,7 +17,6 @@ export default {
 .foot-total {
   display: flex;
   height: 40px;
-  //border: 1px solid @serve-six;
   position: fixed;
   bottom: 0;
   left: 0;

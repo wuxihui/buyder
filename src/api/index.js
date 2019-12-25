@@ -172,7 +172,9 @@ const Api = {
   getMyPurchaseCar(params) {
     return http.get("/api/BuyChina/MyPurchaseCar?" + stringify(params))
   },
-  
+  SendEmailVCode(params) {
+    return http.get("/api/BuyChina/SendEmailVCode?" + stringify(params))
+  },
 }
 
 export default Api

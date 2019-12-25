@@ -70,10 +70,6 @@
         <p>
           <span>{{ $t("details.Buying commission") }}:</span>
           <span>{{ procedure }}{{ symbol }}</span>
-          <!-- <span>
-            <img src="@/img/code-buy.png" alt />
-            <span>图片说明</span>
-          </span>-->
         </p>
         <p>
           <span>{{ $t("details.The freight") }}:</span>
@@ -190,12 +186,12 @@
         <ul>
           <li>{{ detailsList.title }}</li>
           <li>
-            <span>价格</span>
+            <span>{{ $t("details.The price") }}:</span>
             <span
               v-for="(infor, index) in defaultYueNanDun"
               :key="index"
-              style="margin: 0 10px; position: relative;
-                     top: -10px"
+              style="margin: 0 8px; position: relative;
+                     top: -10px; line-height: 20px"
             >
               <b
                 style="font-weight: 900; font-size: 20px; color: #d33319; display: block"
@@ -211,12 +207,9 @@
             </p>
           </li>
           <li>
-            <span>起批量</span>
-            <span
-              v-for="(item, index) in defaultPrices"
-              :key="index"
-              style="margin: 0 10px"
-            >
+            <span>{{ $t("details.Batch_quantity") }}:</span>
+            <!-- style="margin: 0 10px" -->
+            <span v-for="(item, index) in defaultPrices" :key="index">
               <i v-html="item.amount"></i>
               {{ detailsList.unit }}</span
             >
@@ -409,20 +402,26 @@ export default {
       "defaultPrices", //默认价格和起批量
       "defaultYueNanDun", //默认越南盾钱
       "sizeMap", //所有商品的集合对应的价格和数量
-      // "stylesValueOne", //1688商品规格
-      // "stylesValueTwo", //1688商品规格
       "batchPriceOne", //1688默认第一个单价
-      "batchPriceYueNanDun" //1688默认第一个越南盾单价
+      "batchPriceYueNanDun", //1688默认第一个越南盾单价
+      "urls"
     ])
+  },
+  watch: {
+    urls: {
+      handler(newName, oldName) {
+        if (newName !== oldName) {
+          this.inputNum = 1;
+          this.numberVal = 1;
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     //代购车
     ...mapActions("car", ["getCarList"]),
     ...mapActions("header", ["getGenerationList"]),
-    //1688客户增加或减少数量
-    handleChangeNum(value) {
-      console.log(value);
-    },
     //向左边移动
     goLeft() {
       //控制箭头颜色
@@ -437,8 +436,6 @@ export default {
       if (
         accAdd(Math.abs(this.left), 100) >=
         Math.floor(accDiv(this.imgList.length, 6)) * 256
-        // Math.abs(this.left) >=
-        // accMul(Math.floor(accDiv(this.imgList.length, 6)), 256)
       ) {
         return;
       } else {
@@ -727,13 +724,15 @@ export default {
               }
             });
           }
-        } else {
+        } else if (
+          !this.endQuatys &&
+          (!this.stylesValue && this.quaTayOne == 0)
+        ) {
           this.$message({
             message: this.$t("details.stock_present"),
             type: "warning"
           });
-        }
-        if (!this.stylesValue && this.quaTayOne > 0) {
+        } else if (!this.stylesValue && this.quaTayOne > 0) {
           this.$router.push({
             path: "shopList",
             query: {
@@ -789,21 +788,31 @@ export default {
                 });
               }
             });
-            if (!this.stylesValue && this.quaTayOne > 0) {
-              //post，添加购物车
-              this.$api.addCar(params).then(res => {
-                if (res.Data) {
-                  this.flag = !this.flag;
-                } else {
-                  this.$message({
-                    message: res.Msg,
-                    type: "warning"
-                  });
-                }
-              });
-            }
           }
-        } else {
+        } else if (!this.stylesValue && this.quaTayOne > 0) {
+          this.priceByQuatys();
+          if (parseInt(this.inputNum) < parseInt(this.minNumber)) {
+            this.$message({
+              message: this.$t("details.starting_batch"),
+              type: "warning"
+            });
+          } else {
+            //post，添加购物车
+            this.$api.addCar(params).then(res => {
+              if (res.Data) {
+                this.flag = !this.flag;
+              } else {
+                this.$message({
+                  message: res.Msg,
+                  type: "warning"
+                });
+              }
+            });
+          }
+        } else if (
+          !this.endQuatys &&
+          (!this.stylesValue && this.quaTayOne == 0)
+        ) {
           this.$message({
             message: this.$t("details.stock_present"),
             type: "warning"
@@ -865,7 +874,6 @@ export default {
         let endPrice = 0; //变动的越南盾价格
         if (lenz > 1) {
           let key = keyArr.join("&gt;");
-          console.log(keyArr.join(","));
           this.$store.commit("header/SETTEXTARR", keyArr.join(","));
           this.$store.commit(
             "header/SETENDQUATYS",
@@ -1062,7 +1070,6 @@ export default {
     }
     .details-arrow-left {
       float: left;
-      height: 100%;
       z-index: 10;
       background: @fff;
       .el-icon-arrow-left {
@@ -1071,18 +1078,11 @@ export default {
         z-index: 10;
         margin: 16px 0 0 12px;
       }
-      /* .el-icon-arrow-left:hover {
-        color: @home-logo;
-      } */
     }
     .details-arrow-right {
       float: left;
-      height: 100%;
       z-index: 10;
       background: @fff;
-      /* .el-icon-arrow-right:hover {
-        color: @home-logo;
-      } */
       .el-icon-arrow-right {
         font-size: 25px;
         cursor: pointer;
@@ -1104,16 +1104,13 @@ export default {
       }
       ul {
         position: absolute;
-        /* justify-content: center; */
         display: flex;
         z-index: 0;
-        /* background: red; */
         li {
           width: 50px;
           height: 50px;
           margin: 0 6px;
           border: 1px solid @fff;
-          //border: 2px solid @fff;
           img {
             cursor: pointer;
             width: 50px;
@@ -1141,7 +1138,7 @@ export default {
       margin-top: 22px;
       display: flex;
       span:nth-of-type(1) {
-        margin-right: 20px;
+        margin-right: 90px;
       }
       p {
         margin-left: 10px;
@@ -1155,15 +1152,21 @@ export default {
     li:nth-of-type(3) {
       font-size: 14px;
       margin-top: 22px;
-      span:nth-of-type(1) {
+      span:nth-child(1) {
         margin-right: 10px;
+      }
+      span:nth-child(3) {
+        margin-left: 46px;
+      }
+      span:nth-child(4) {
+        margin-left: 43px;
       }
     }
     li:nth-of-type(4) {
       font-size: 14px;
       margin-top: 22px;
       span:nth-of-type(1) {
-        margin-right: 10px;
+        margin-right: 35px;
       }
     }
     li:nth-of-type(5) {
@@ -1210,9 +1213,6 @@ export default {
     li:nth-of-type(7) {
       font-size: 14px;
       margin-top: 22px;
-      h2 {
-        width: 25px;
-      }
       .details-thousand-stylesValueTwo {
         display: flex;
         margin-top: 22px;

@@ -18,8 +18,6 @@ export default {
         priceYueNanDun: "", //中国商品单价默认越南盾钱
         styleLists: "", //商品类型分类
         stylesValue: "", //商品类型的value值
-        // stylesValueOne: {}, //1688规格
-        // stylesValueTwo: {}, //1688规格
         valueIds: "", //取出value对应的id的值
         quaTayOne: "", //默认数量
         urls: "", //头部input框链接
@@ -115,12 +113,6 @@ export default {
         SETSIZEMAP(state, maps) {
             state.sizeMap = maps
         }, //选中商品key值的变化集合
-        // SETSTYLESVALUEONE(state, ones) {
-        //     state.stylesValueOne = ones
-        // }, //1688商品规格
-        // SETSTYLESVALUETWO(state, twos) {
-        //     state.stylesValueTwo = twos
-        // }, //1688商品规格
         SETBATCHPRICEONE(state, prices) {
             state.batchPriceOne = prices
         }, //1688默认RMB第一个单价
@@ -180,9 +172,6 @@ export default {
                 let resBatchYueNanDun = [];
                 //变化的规格集合
                 let resSizeMap = {};
-                // //商品规格
-                // let resStyleValueOne = {};
-                // let resStyleValueTwo = {};
                 let rate = payLoad.rate
                 if (resUrls.indexOf("taobao.com") > -1) {
                     resThoUnd = false
@@ -303,7 +292,7 @@ export default {
                 } else if (resUrls.indexOf("1688.com") > -1) {
                     resMain = JSON.parse(res.Data)
                     resThoUnd = true
-                    console.log(resMain);
+                    //console.log(resMain);
                     //第一张大图
                     resBigImg = resMain.ImageUrl[0]
                     //图片集合
@@ -339,7 +328,7 @@ export default {
                     resDefault = resMain.totalCanBookCount;
                     //商品规格选择变化的集合
                     resSizeMap = resMain.skuMap;
-                    console.log(resSizeMap);
+                    //console.log(resSizeMap);
                 }
                 commit("DETAILSLIST", resMain) //商品主体信息
                 commit("SETIMGLIST", resImg) //商品图片
@@ -365,8 +354,6 @@ export default {
                 commit("SETDEFAULTYUENANDUN", resBatchYueNanDun) //默认越南盾钱
                 commit("SETSTYLEKEY", "") //清空1688中类型的key值
                 commit("SETSIZEMAP", resSizeMap) //选中商品key值的变化
-                // commit("SETSTYLESVALUEONE", resStyleValueOne) //1688商品规格
-                // commit("SETSTYLESVALUETWO", resStyleValueTwo) //1688商品规格
                 commit("SETBATCHPRICEONE", resBatchPriceOne) //1688默认第一个单价
                 commit("SETPRICESYUENANDUN", resBatchPriceYueOne) //1688默认第一个越南盾单价
             })
